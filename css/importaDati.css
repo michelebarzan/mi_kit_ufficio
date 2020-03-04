@@ -1,0 +1,217 @@
+#outerContainerImportaDati
+{
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top:100px;
+    margin-bottom: 90px;
+    width:calc(100% - 100px);
+    display: flex;
+    flex-direction: row;
+    min-height: calc(100% - 190px);
+}
+.innerContainerImportaDati
+{
+    width: calc(50% - 25px);
+    box-sizing: border-box;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    background-color: #404040;
+    min-height: 100%;
+    max-height: 100%;
+    display: flex;
+    border-radius: 3px;
+    flex-direction: column;
+    padding-bottom:20px;
+}
+#leftContainerImportaDati
+{
+    margin-right: 25px;
+}
+#rightContainerImportaDati
+{
+    margin-left: 25px;
+}
+.innerContainerRowImportaDati
+{
+    width:100%;
+    display: flex;
+    box-sizing: border-box;
+    padding-left:20px;
+    padding-right:20px;
+    padding-top:20px;
+}
+.innerContainerRowImportaDati table
+{
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    border-collapse: collapse;
+    width:100%;
+    text-align: left;
+}
+.tableLottiBodyRow
+{
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    border-radius: 3px;
+    border-bottom:1px solid rgb(85, 85, 85);
+}
+.tableLottiBodyRow:hover
+{
+    background-color: rgb(85, 85, 85);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-bottom:1px solid transparent;
+}
+.tableLottiHeaderRow
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-bottom:none;
+}
+.innerContainerRowImportaDati table th
+{
+    color:#bbb;
+    font-weight: bold;
+    padding:10px;
+    font-weight: normal;
+    background-color: rgb(75, 75, 75);
+}
+.innerContainerRowImportaDati table td
+{
+    color:#bbb;
+    padding:5px;
+    padding-left:10px;
+    padding-right:10px;
+}
+.innerContainerRowImportaDati table div
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height:100%;
+    width:100%;
+}
+.innerContainerRowImportaDati table div i
+{
+    margin-left:10px;
+}
+.importaDatiButton
+{
+    border-radius: 3px;
+    height:35px;
+    width:100%;
+    background-color: rgb(75, 75, 75);
+    border:none;
+    outline: none;
+    cursor: pointer;
+    color:#EBEBEB;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.importaDatiButton:hover
+{
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+.importaDatiButton:active
+{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.importaDatiButton:disabled
+{
+    cursor: not-allowed;
+    color:gray;
+}
+.importaDatiButton span
+{
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+}
+.importaDatiButton i
+{
+    margin-left: 5px;
+}
+.importaDatiButton div
+{
+    margin-left: 5px;
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+}
+#inputImportaFileGea
+{
+    display: none;
+}
+.containerTableMaterialiAggiuntiviCarrello
+{
+    width:100%;
+    max-height:600px;
+    overflow:auto;
+    padding:20px;
+    box-sizing: border-box;
+    border-radius: 3px;
+}
+.tableMaterialiAggiuntiviCarrello
+{
+    font-family: 'Montserrat',sans-serif;
+    font-size: 12px;
+    border-collapse: collapse;
+    width:100%;
+    text-align: left;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.tableCompletamentiBodyRow
+{
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    border-radius: 3px;
+    border-bottom:1px solid rgb(85, 85, 85);
+}
+.tableCompletamentiBodyRow:hover
+{
+    background-color: rgb(85, 85, 85);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-bottom:1px solid transparent;
+}
+.tableCompletamentiHeaderRow
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-bottom:none;
+}
+.tableMaterialiAggiuntiviCarrello th
+{
+    color:#bbb;
+    font-weight: bold;
+    padding:10px;
+    font-weight: normal;
+    background-color: rgb(75, 75, 75);
+}
+.tableMaterialiAggiuntiviCarrello td
+{
+    color:#bbb;
+    padding:5px;
+    padding-left:10px;
+    padding-right:10px;
+}
+/* width */
+::-webkit-scrollbar
+{
+    width: 7px;
+}
+/* Track */
+::-webkit-scrollbar-track
+{
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.05);
+}
+/* Handle */
+::-webkit-scrollbar-thumb
+{
+    background: rgb(128, 127, 127); 
+    border-radius: 10px;
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover
+{
+    background: #aaa; 
+}

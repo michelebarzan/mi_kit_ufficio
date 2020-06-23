@@ -33,9 +33,9 @@
 					<span>Anagrafica linee</span>
 					<i class="fad fa-line-columns"></i>
 				</button>
-				<button class="full-width-action-bar-button" onclick="resetStyle(this);">
-					<span>Button</span>
-					<i class="fad fa-list"></i>
+				<button class="full-width-action-bar-button" onclick="resetStyle(this);anagraficaStazioni(this)">
+					<span>Anagrafica stazioni</span>
+					<i class="fad fa-network-wired"></i>
 				</button>
 			</div>
         </div>

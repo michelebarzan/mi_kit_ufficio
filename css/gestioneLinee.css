@@ -94,6 +94,7 @@
     align-items: center;
     justify-content: center;
     width:100%;
+    margin-bottom: 60px;
 }
 .gestioneLineeInnerContainer
 {
@@ -303,7 +304,10 @@
     flex-direction: row;
     /*overflow-x:hidden;
     overflow-y: auto;
-    flex-direction: column;*/
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;*/
+
     border:2px solid transparent;
     padding:3px;
     box-sizing: border-box;

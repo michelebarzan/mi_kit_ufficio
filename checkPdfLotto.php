@@ -25,7 +25,7 @@
                 $pdf_mancante["codice"]=$row['kit'];
                 array_push($pdf_mancanti,$pdf_mancante);
             }
-            //$myfile = fopen("C:\\xampp\\htdocs\\mi_kit_pdf\\kit\\".$row['kit'].".pdf", "w");
+            //$myfile = fopen("C:\\xampp\\htdocs\\mi_kit_pdf\\pdf.js\\web\\pdf\\kit\\".$row['kit'].".pdf", "w");
         }
     }
     $q6="SELECT DISTINCT disegno_cabina FROM [view_cabine] WHERE commessa='$commessa' AND lotto='$lotto'";
@@ -45,7 +45,7 @@
                 $pdf_mancante["codice"]=$row2['disegno_cabina'];
                 array_push($pdf_mancanti,$pdf_mancante);
             }
-            //$myfile = fopen("C:\\xampp\\htdocs\\mi_kit_pdf\\cabine_corridoi\\".$row2['disegno_cabina'].".pdf", "w");
+            //$myfile = fopen("C:\\xampp\\htdocs\\mi_kit_pdf\\pdf.js\\web\\pdf\\cabine_corridoi\\".$row2['disegno_cabina'].".pdf", "w");
         }
     }
     echo json_encode($pdf_mancanti);

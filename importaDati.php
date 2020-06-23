@@ -27,14 +27,14 @@
                 </div>
                 <div id="lottiContainer" class="innerContainerRowImportaDati"></div>
             </div>
-            <div id="rightContainerImportaDati" class="innerContainerImportaDati">
+            <!--<div id="rightContainerImportaDati" class="innerContainerImportaDati">
                 <div class="innerContainerRowImportaDati">
                     <button id="importaDatiDbTecnicoButton" class="importaDatiButton" onclick="importaDatiDbTecnico(this)">
-                        <span>Importa database tecnico</span><!-- fai partire la stored porocedure createCarrelliCabine-->
+                        <span>Importa database tecnico</span>
                         <i class="fad fa-database"></i>
                     </button>
                 </div>
-            </div>
+            </div>-->
         </div>
 		<div id="footer">
 			<b>Marine&nbspInteriors&nbspS.p.A.</b>&nbsp&nbsp|&nbsp&nbspVia&nbspSegaluzza&nbsp33170&nbspPordenone&nbsp&nbsp|&nbsp&nbspPhone:&nbsp(+39)&nbsp0434612811&nbsp|&nbspPowered&nbspby&nbsp<a target="_blank" href="http://www.servizioglobale.it">Servizio Globale S.R.L.</a>

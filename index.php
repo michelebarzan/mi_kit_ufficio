@@ -10,6 +10,27 @@
 		<title><?php echo $pageName; ?></title>
 		<link rel="stylesheet" href="css/struttura.css" />
 		<script src="js/struttura.js"></script>
+		<style>
+		html
+		{
+			overflow-x:hidden;
+			width:100%;
+			height:100%;
+			margin:0px;
+		}
+		body
+		{
+			display: flex;
+			overflow-x:hidden;
+			width:100%;
+			height:100%;
+			margin:0px;
+			align-items:center;
+			flex-direction:column;
+			justify-content:flex-start;
+		}
+		
+		</style>
 	</head>
 	<body>
 		<?php include('struttura.php'); ?>
@@ -28,6 +49,10 @@
 					<div class="homepageLink" data-tooltip="Gestione linee" onclick="gotopath('gestioneLinee.php')">
 						<i class="fad fa-line-columns"></i>
 						<div>Gestione linee</div>
+					</div>
+					<div class="homepageLink" data-tooltip="Parametri & anagrafiche" onclick="gotopath('parametri&anagrafiche.php')">
+						<i class="fad fa-database"></i>
+						<div>Parametri & anagrafiche</div>
 					</div>
 				</div>
 				<div id="statisticheSwContainer"></div>

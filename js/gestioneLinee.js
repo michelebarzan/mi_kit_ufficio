@@ -274,6 +274,7 @@ async function getElencoLinee(commessa,lotto)
         id_linee.push(linea.id_linea);
     });
     cabine_corridoi_linee=await getCabineCorridoiLinee(id_linee,commessa,lotto);
+    console.log(cabine_corridoi_linee);
 
     var i=0;
     linee.forEach(function(linea)
@@ -823,6 +824,44 @@ function anagraficaLinee(button)
 
     getTable("anagrafica_linee");
 }
+function anagraficaStazioni(button)
+{
+    $("#gestioneLineeActionBar").show("fast","swing");
+    $("#gestioneLineeActionBar").css({"display":"flex"});
+    var actionBar=document.getElementById("gestioneLineeActionBar");
+    actionBar.innerHTML="";
+    
+    var actionBarItem=document.createElement("div");
+    actionBarItem.setAttribute("class","action-bar-item");
+
+    var span=document.createElement("span");
+    span.setAttribute("style","margin-right:5px");
+    span.setAttribute("class","action-bar-item-span");
+    span.innerHTML="Righe:";
+    actionBarItem.appendChild(span);
+
+    var span=document.createElement("span");
+    span.setAttribute("id","rowsNumEditableTable");
+    span.setAttribute("class","action-bar-item-span");
+    span.setAttribute("style","font-weight:normal;color:black");
+    span.innerHTML="0";
+    actionBarItem.appendChild(span);
+    
+    actionBar.appendChild(actionBarItem);
+
+    var actionBarItem=document.createElement("div");
+    actionBarItem.setAttribute("class","action-bar-item");
+
+    var buttonRipristina=document.createElement("button");
+    buttonRipristina.setAttribute("class","action-bar-text-icon-button");
+    buttonRipristina.setAttribute("onclick","resetFilters();getTable(selectetTable)");
+    buttonRipristina.innerHTML='<span>Ripristina</span><i class="fal fa-filter"></i>';
+    actionBarItem.appendChild(buttonRipristina);
+    
+    actionBar.appendChild(actionBarItem);
+
+    getTable("anagrafica_stazioni");
+}
 function getTable(table,orderBy,orderType)
 {
     if(table=="anagrafica_linee")
@@ -834,6 +873,19 @@ function getTable(table,orderBy,orderType)
             container:'gestioneLineeInnerContainer',
             readOnlyColumns:['id_linea'],
             noInsertColumns:['id_linea'],
+            orderBy:orderBy,
+            orderType:orderType
+        });
+    }
+    if(table=="anagrafica_stazioni")
+    {
+        getEditableTable
+        ({
+            table:'anagrafica_stazioni',
+            editable: true,
+            container:'gestioneLineeInnerContainer',
+            readOnlyColumns:['id_stazione'],
+            noInsertColumns:['id_stazione'],
             orderBy:orderBy,
             orderType:orderType
         });

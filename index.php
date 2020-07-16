@@ -50,9 +50,9 @@
 						<i class="fad fa-line-columns"></i>
 						<div>Gestione linee</div>
 					</div>
-					<div class="homepageLink" data-tooltip="Parametri & anagrafiche" onclick="gotopath('parametri&anagrafiche.php')">
+					<div class="homepageLink" data-tooltip="Parametri & configurazioni" onclick="gotopath('parametri&anagrafiche.php')">
 						<i class="fad fa-database"></i>
-						<div>Parametri & anagrafiche</div>
+						<div>Parametri & configurazioni</div>
 					</div>
 				</div>
 				<div id="statisticheSwContainer"></div>

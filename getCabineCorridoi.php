@@ -9,6 +9,7 @@
     $lotto=$_REQUEST['lotto'];
     $commessa=$_REQUEST['commessa'];
     $mostraCarrelli=$_REQUEST['mostraCarrelli'];
+    $turno=$_REQUEST['turno'];
 
     $cabine_corridoi=[];
 
@@ -21,7 +22,7 @@
             WHERE (lotto = '$lotto') AND (commessa = '$commessa') AND (numero_cabina NOT IN
                 (SELECT cabina_corridoio
                 FROM dbo.linee_cabine_corridoi
-                WHERE (lotto = '$lotto') AND (commessa = '$commessa')))";
+                WHERE (lotto = '$lotto') AND (commessa = '$commessa'))) OPTION ( QUERYTRACEON 9481 )";
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {

@@ -10,6 +10,7 @@
     $lotto=$_REQUEST['lotto'];
     $commessa=$_REQUEST['commessa'];
     $mostraCarrelli=$_REQUEST['mostraCarrelli'];
+    $turno=$_REQUEST['turno'];
 
     $cabine_corridoi_linee=[];
 
@@ -25,7 +26,7 @@
                                             UNION ALL
                                             SELECT commessa, lotto, numero_cabina, disegno_cabina, kit, posizione, qnt
                                             FROM dbo.view_corridoi) AS derivedtbl_2) AS derivedtbl_1 ON dbo.linee_cabine_corridoi.cabina_corridoio = derivedtbl_1.numero_cabina
-            WHERE (dbo.linee_cabine_corridoi.lotto = '$lotto') AND (dbo.linee_cabine_corridoi.commessa = '$commessa') AND (dbo.linee_cabine_corridoi.linea = $id_linea)";
+            WHERE (dbo.linee_cabine_corridoi.lotto = '$lotto') AND (dbo.linee_cabine_corridoi.commessa = '$commessa') AND (dbo.linee_cabine_corridoi.linea = $id_linea) AND (dbo.linee_cabine_corridoi.turno = $turno) OPTION ( QUERYTRACEON 9481 )";
         $result2=sqlsrv_query($conn,$query2);
         if($result2==TRUE)
         {

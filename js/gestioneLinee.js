@@ -9,6 +9,7 @@ var colorsCarrelli=[];
 /*var carrelloBefore;
 var colorCarrello;*/
 var carrelli=[];
+var turno;
 
 function resetStyle(button)
 {
@@ -29,17 +30,17 @@ async function assegnaCabineCorridoi(button)
     $("#gestioneLineeActionBar").show("fast","swing");
     $("#gestioneLineeActionBar").css({"display":"flex"});
 
+    var actionBar=document.getElementById("gestioneLineeActionBar");
+    actionBar.innerHTML="";
+
     var actionBarItem=document.createElement("div");
-    actionBarItem.setAttribute("class","action-bar-item");
+    actionBarItem.setAttribute("class","rcb-select-container");
     
     var span=document.createElement("span");
-    span.setAttribute("style","margin-right:5px");
-    span.setAttribute("class","action-bar-item-span");
-    span.innerHTML="Lotto:";
+    span.innerHTML="Lotto";
     actionBarItem.appendChild(span);
 
     var selectLotto=document.createElement("select");
-    selectLotto.setAttribute("style","margin-left:5px");
     selectLotto.setAttribute("onchange","getElencoCabineCorridoi(this)");
     selectLotto.setAttribute("id","selectLottoAssegnaCabineCorridoi");
     var lotti=await getLotti("lotto","DESC");
@@ -68,19 +69,36 @@ async function assegnaCabineCorridoi(button)
         });
         selectLotto.appendChild(optgroup);
     });
-    var actionBar=document.getElementById("gestioneLineeActionBar");
-    actionBar.innerHTML="";
+    
     actionBarItem.appendChild(selectLotto);
     actionBar.appendChild(actionBarItem);
 
+    var actionBarItem=document.createElement("div");
+    actionBarItem.setAttribute("class","rcb-select-container");
+
+    var selectTurno=document.createElement("select");
+    selectTurno.setAttribute("onchange","getElencoCabineCorridoi(document.getElementById('selectLottoAssegnaCabineCorridoi'))");
+    selectTurno.setAttribute("id","selectTurnoAssegnaCabineCorridoi");
+    var turni=await getTurni();
+    turni.forEach(function (turno)
+    {
+        var option=document.createElement("option");
+        option.setAttribute("value",turno.id_turno);
+        option.innerHTML=turno.label;
+        selectTurno.appendChild(option);
+    });
+    
+    actionBarItem.appendChild(selectTurno);
+    actionBar.appendChild(actionBarItem);
+
     var switchButton=document.createElement("button");
-    switchButton.setAttribute("class","action-bar-button");
+    switchButton.setAttribute("class","rcb-button-text-icon");
     switchButton.setAttribute("onclick","switchCodiceCabineCorridoiItemAll()");
-    switchButton.innerHTML='<span>Numero cabina</span><i class="fad fa-repeat-alt" style="color:#4C91CB;margin-right: 5px;"></i><span>Disegno cabina</span>';
+    switchButton.innerHTML='<span>Numero cabina</span><i class="fad fa-repeat-alt" style="color:#4C91CB;margin-right: 5px;margin-left: 5px;"></i><span>Disegno cabina</span>';
     actionBar.appendChild(switchButton);
 
     var mostraCarrelliButton=document.createElement("button");
-    mostraCarrelliButton.setAttribute("class","action-bar-button");
+    mostraCarrelliButton.setAttribute("class","rcb-button-text-icon");
 
     var labelMostraCarrelli=document.createElement("label");
     labelMostraCarrelli.setAttribute("class","pure-material-checkbox");
@@ -99,22 +117,37 @@ async function assegnaCabineCorridoi(button)
     mostraCarrelliButton.appendChild(labelMostraCarrelli);
     actionBar.appendChild(mostraCarrelliButton);
 
+    var mappaColoriCarrelliButton=document.createElement("button");
+    mappaColoriCarrelliButton.setAttribute("class","rcb-button-text-icon");
+    mappaColoriCarrelliButton.setAttribute("id","mappaColoriCarrelliButton");
+    mappaColoriCarrelliButton.setAttribute("style","display:none");
+    mappaColoriCarrelliButton.setAttribute("onclick","getPopupMappaColoriCarrelli()");
+    mappaColoriCarrelliButton.innerHTML='<span>Colori carrelli</span><i style="margin-left:5px" class="fad fa-palette"></i>';
+    actionBar.appendChild(mappaColoriCarrelliButton);
+
     var raggruppaCarrelliButton=document.createElement("button");
-    raggruppaCarrelliButton.setAttribute("class","action-bar-button");
+    raggruppaCarrelliButton.setAttribute("class","rcb-button-text-icon");
     raggruppaCarrelliButton.setAttribute("onclick","raggruppaCarrelli()");
-    raggruppaCarrelliButton.innerHTML='<span>Raggruppa carrelli</span><i class="fad fa-layer-group"></i>';
+    raggruppaCarrelliButton.innerHTML='<span>Raggruppa carrelli</span><i style="margin-left:5px" class="fad fa-layer-group"></i>';
     actionBar.appendChild(raggruppaCarrelliButton);
+
+    var riepilogoButton=document.createElement("button");
+    riepilogoButton.setAttribute("class","rcb-button-text-icon");
+    riepilogoButton.setAttribute("onclick","getPopupRiepilogo()");
+    riepilogoButton.innerHTML='<span>Riepilogo</span><i style="margin-left:5px" class="fad fa-analytics"></i>';
+    actionBar.appendChild(riepilogoButton);
 
     $("#selectLottoAssegnaCabineCorridoi").multipleSelect(
     {
         single:true,
         onAfterCreate: function () 
                 {
-                    $(".ms-choice").css({"height":"20px","line-height":"21px"});
+                    $(".ms-choice").css({"height":"20px","line-height":"21px","background-color":"transparent","border":"none"});
                 },
         onOpen:function()
         {
             $(".ms-search input").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left"});
+            $(".optgroup").css({"font-family":"'Montserrat',sans-serif","font-size":"12px","text-align":"left"});
         },
         filter:true,
         filterPlaceholder:"Cerca...",
@@ -153,12 +186,36 @@ async function getElencoCabineCorridoi(select)
     selectLottoAssegnaCabineCorridoi=select;
     selectLottoAssegnaCabineCorridoi.disabled=true;
 
+    colorsCarrelli=[];
+
     gestioneLineeActionBar=document.getElementById("gestioneLineeActionBar");
-    getFaSpinner(gestioneLineeActionBar,"gestioneLineeActionBar","Caricamento in corso...");
+    //getFaSpinner(gestioneLineeActionBar,"gestioneLineeActionBar","Caricamento in corso...");
+    Swal.fire
+    ({
+        title: "Caricamento in corso... ",
+        background:"rgba(0,0,0,0.4)",
+        html: '<i style="color:#ddd" class="fad fa-spinner-third fa-spin fa-3x"></i>',
+        showConfirmButton:false,
+        showCloseButton:false,
+        allowEscapeKey:false,
+        allowOutsideClick:false,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.color="white";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
+            document.getElementsByClassName("swal2-container")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.height="100%";
+            document.getElementsByClassName("swal2-popup")[0].style.maxWidth="100%";document.getElementsByClassName("swal2-popup")[0].style.minWidth="100%";document.getElementsByClassName("swal2-popup")[0].style.width="100%";
+        }
+    });
 
     var selectValue=$('#selectLottoAssegnaCabineCorridoi').multipleSelect('getSelects')[0];
     var commessa=selectValue.split("|")[0];
     var lotto=selectValue.split("|")[1];
+
+    turno=document.getElementById("selectTurnoAssegnaCabineCorridoi").value;
 
     var cabineCorridoiOuterContainer=document.getElementById("cabineCorridoiOuterContainer");
     var cabineCorridoiInnerContainer=document.getElementById("cabineCorridoiInnerContainer");
@@ -238,7 +295,8 @@ function getCabineCorridoi(commessa,lotto)
         {
             commessa,
             lotto,
-            mostraCarrelli
+            mostraCarrelli,
+            turno
         },
         function(response, status)
         {
@@ -259,6 +317,8 @@ var sortableDropHelper=
 };
 async function getElencoLinee(commessa,lotto)
 {
+    document.getElementById("mappaColoriCarrelliButton").style.display="none";
+
     var container=document.getElementById("lineeContainer");
 
     linee=await getLinee();
@@ -282,9 +342,9 @@ async function getElencoLinee(commessa,lotto)
         var lineaOuterContainer=document.createElement("div");
         lineaOuterContainer.setAttribute("class","linea-outer-container");
         if(i==linee.length-1)
-            lineaOuterContainer.setAttribute("style","height:"+height+"px;margin-bottom:0px");
+            lineaOuterContainer.setAttribute("style","height:"+height+"px;margin-bottom:0px;border:2px solid "+linea.colore);
         else
-            lineaOuterContainer.setAttribute("style","height:"+height+"px");
+            lineaOuterContainer.setAttribute("style","height:"+height+"px;border:2px solid "+linea.colore);
 
         var lineaInnerContainer=document.createElement("div");
         lineaInnerContainer.setAttribute("class","linea-inner-container connectedSortable");
@@ -454,13 +514,18 @@ async function getElencoLinee(commessa,lotto)
                     }
                 }
     }).disableSelection();
-    removeFaSpinner("gestioneLineeActionBar");
+    //removeFaSpinner("gestioneLineeActionBar");
+    Swal.close();
     getTotaliLinee();
     if(mostraCarrelli)
+    {
+        getColorsCarrelli();
         coloraCarrelli();
+        document.getElementById("mappaColoriCarrelliButton").style.display="block";
+    }
     selectLottoAssegnaCabineCorridoi.disabled=false;
 }
-function coloraCarrelli()
+function getColorsCarrelli()
 {
     var dirty_carrelli=carrelli;
     carrelli=[];
@@ -469,15 +534,20 @@ function coloraCarrelli()
     });
     carrelli.forEach(function (carrello)
     {
-        var colorObj=hexToRgb(getRandomColor());
+        var randomColor=getRandomColor();
+        var colorObj=hexToRgb(randomColor);
         var color="rgba("+colorObj.r+","+colorObj.g+","+colorObj.b+",0.45)";
         var colorCarrello=
         {
             carrello,
-            color
+            color,
+            colorHex:randomColor
         };
         colorsCarrelli.push(colorCarrello);
     });
+}
+function coloraCarrelli()
+{
     var cabineCorridoiItems=document.getElementsByClassName("cabine-corridoi-item");
     for (let index = 0; index < cabineCorridoiItems.length; index++)
     {
@@ -688,7 +758,7 @@ function rimuoviCabinaCorridoio(id_linea,commessa,lotto,numero_cabina)
 {
     $.get("rimuoviCabinaCorridoio.php",
     {
-        id_linea,commessa,lotto,numero_cabina
+        id_linea,commessa,lotto,numero_cabina,turno
     },
     function(response, status)
     {
@@ -710,7 +780,7 @@ function aggiungiCabinaCorridoio(id_linea,commessa,lotto,numero_cabina)
 {
     $.get("aggiungiCabinaCorridoio.php",
     {
-        id_linea,commessa,lotto,numero_cabina
+        id_linea,commessa,lotto,numero_cabina,turno
     },
     function(response, status)
     {
@@ -738,7 +808,8 @@ function getCabineCorridoiLinee(id_linee,commessa,lotto)
             JSONid_linee,
             commessa,
             lotto,
-            mostraCarrelli
+            mostraCarrelli,
+            turno
         },
         function(response, status)
         {
@@ -786,6 +857,38 @@ function getLotti(order_by,order_type)
         });
     });
 }
+function anagraficaTurni(button)
+{
+    $("#gestioneLineeActionBar").show("fast","swing");
+    $("#gestioneLineeActionBar").css({"display":"flex"});
+    var actionBar=document.getElementById("gestioneLineeActionBar");
+    actionBar.innerHTML="";
+    
+    var actionBarItem=document.createElement("div");
+    actionBarItem.setAttribute("class","rcb-text-container");
+
+    var span=document.createElement("span");
+    span.setAttribute("style","margin-right:5px");
+    span.innerHTML="Righe:";
+    actionBarItem.appendChild(span);
+
+    var span=document.createElement("span");
+    span.setAttribute("id","rowsNumEditableTable");
+    span.setAttribute("style","font-weight:normal;color:black");
+    span.innerHTML="0";
+    actionBarItem.appendChild(span);
+    
+    actionBar.appendChild(actionBarItem);
+
+    var buttonRipristina=document.createElement("button");
+    buttonRipristina.setAttribute("class","rcb-button-text-icon");
+    buttonRipristina.setAttribute("onclick","resetFilters();getTable(selectetTable)");
+    buttonRipristina.innerHTML='<span>Ripristina</span><i style="margin-left:5px" class="fal fa-filter"></i>';
+    
+    actionBar.appendChild(buttonRipristina);
+
+    getTable("anagrafica_turni");
+}
 function anagraficaLinee(button)
 {
     $("#gestioneLineeActionBar").show("fast","swing");
@@ -794,33 +897,27 @@ function anagraficaLinee(button)
     actionBar.innerHTML="";
     
     var actionBarItem=document.createElement("div");
-    actionBarItem.setAttribute("class","action-bar-item");
+    actionBarItem.setAttribute("class","rcb-text-container");
 
     var span=document.createElement("span");
     span.setAttribute("style","margin-right:5px");
-    span.setAttribute("class","action-bar-item-span");
     span.innerHTML="Righe:";
     actionBarItem.appendChild(span);
 
     var span=document.createElement("span");
     span.setAttribute("id","rowsNumEditableTable");
-    span.setAttribute("class","action-bar-item-span");
     span.setAttribute("style","font-weight:normal;color:black");
     span.innerHTML="0";
     actionBarItem.appendChild(span);
     
     actionBar.appendChild(actionBarItem);
 
-    var actionBarItem=document.createElement("div");
-    actionBarItem.setAttribute("class","action-bar-item");
-
     var buttonRipristina=document.createElement("button");
-    buttonRipristina.setAttribute("class","action-bar-text-icon-button");
+    buttonRipristina.setAttribute("class","rcb-button-text-icon");
     buttonRipristina.setAttribute("onclick","resetFilters();getTable(selectetTable)");
-    buttonRipristina.innerHTML='<span>Ripristina</span><i class="fal fa-filter"></i>';
-    actionBarItem.appendChild(buttonRipristina);
+    buttonRipristina.innerHTML='<span>Ripristina</span><i style="margin-left:5px" class="fal fa-filter"></i>';
     
-    actionBar.appendChild(actionBarItem);
+    actionBar.appendChild(buttonRipristina);
 
     getTable("anagrafica_linee");
 }
@@ -832,33 +929,27 @@ function anagraficaStazioni(button)
     actionBar.innerHTML="";
     
     var actionBarItem=document.createElement("div");
-    actionBarItem.setAttribute("class","action-bar-item");
+    actionBarItem.setAttribute("class","rcb-text-container");
 
     var span=document.createElement("span");
     span.setAttribute("style","margin-right:5px");
-    span.setAttribute("class","action-bar-item-span");
     span.innerHTML="Righe:";
     actionBarItem.appendChild(span);
 
     var span=document.createElement("span");
     span.setAttribute("id","rowsNumEditableTable");
-    span.setAttribute("class","action-bar-item-span");
     span.setAttribute("style","font-weight:normal;color:black");
     span.innerHTML="0";
     actionBarItem.appendChild(span);
     
     actionBar.appendChild(actionBarItem);
 
-    var actionBarItem=document.createElement("div");
-    actionBarItem.setAttribute("class","action-bar-item");
-
     var buttonRipristina=document.createElement("button");
-    buttonRipristina.setAttribute("class","action-bar-text-icon-button");
+    buttonRipristina.setAttribute("class","rcb-button-text-icon");
     buttonRipristina.setAttribute("onclick","resetFilters();getTable(selectetTable)");
-    buttonRipristina.innerHTML='<span>Ripristina</span><i class="fal fa-filter"></i>';
-    actionBarItem.appendChild(buttonRipristina);
+    buttonRipristina.innerHTML='<span>Ripristina</span><i style="margin-left:5px" class="fal fa-filter"></i>';
     
-    actionBar.appendChild(actionBarItem);
+    actionBar.appendChild(buttonRipristina);
 
     getTable("anagrafica_stazioni");
 }
@@ -890,8 +981,376 @@ function getTable(table,orderBy,orderType)
             orderType:orderType
         });
     }
+    if(table=="anagrafica_turni")
+    {
+        getEditableTable
+        ({
+            table:'anagrafica_turni',
+            editable: true,
+            container:'gestioneLineeInnerContainer',
+            readOnlyColumns:['id_turno'],
+            noInsertColumns:['id_turno'],
+            orderBy:orderBy,
+            orderType:orderType
+        });
+    }
 }
 function editableTableLoad()
 {
 
+}
+function getPopupMappaColoriCarrelli()
+{
+    if(colorsCarrelli.length>0)
+    {
+        var outerContainer=document.createElement("div");
+        outerContainer.setAttribute("class","popup-outer-container");
+
+        var actionBar=document.createElement("div");
+        actionBar.setAttribute("class","popup-action-bar");
+        actionBar.setAttribute("style","padding:0px;margin-bottom:5px;height:auto;box-shadow:none");
+
+        var span=document.createElement("span");
+        span.innerHTML="Personalizza colori carrelli";
+        actionBar.appendChild(span);
+
+        var button=document.createElement("button");
+        button.setAttribute("style","margin-left:auto;font-size:18px");
+        button.setAttribute("class","popup-action-bar-close-button");
+        button.setAttribute("onclick","Swal.close()");
+        button.innerHTML='<i class="fal fa-times"></i>';
+        actionBar.appendChild(button);
+
+        outerContainer.appendChild(actionBar);
+
+        var ul=document.createElement("ul");
+        ul.setAttribute("class","popup-ul");
+
+        colorsCarrelli.forEach(function(carrello)
+        {
+            var li=document.createElement("li");
+
+            var span=document.createElement("span");
+            span.innerHTML=carrello.carrello;
+            li.appendChild(span);
+            
+            var input=document.createElement("input");
+            input.setAttribute("type","color");
+            input.setAttribute("class","input-color-carrello");
+            input.setAttribute("carrello",carrello.carrello);
+            console.log(carrello.color);
+            input.setAttribute("value",carrello.colorHex);
+            li.appendChild(input);
+
+            ul.appendChild(li);
+        });
+
+        outerContainer.appendChild(ul);
+
+        var applicaButton=document.createElement("button");
+        applicaButton.setAttribute("class","popup-button");
+        applicaButton.setAttribute("style","width:100%;margin-top:10px;overflow: hidden;");
+        applicaButton.setAttribute("onclick","modificaMappaColoriCarrelli()");
+        applicaButton.innerHTML='<span>Applica</span><i class="fad fa-fill-drip"></i>';
+        outerContainer.appendChild(applicaButton);
+
+        Swal.fire
+        ({
+            background:"#353535",
+            onOpen : function()
+                    {
+                        document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+                        document.getElementsByClassName("swal2-close")[0].style.outline="none";
+                    },
+            showConfirmButton:false,
+            showCancelButton:false,
+            html:outerContainer.outerHTML
+        });
+    }
+}
+function getTurni()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getTurni.php",
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                resolve(JSON.parse(response));
+            }
+            else
+                reject({status});
+        });
+    });
+}
+function modificaMappaColoriCarrelli()
+{
+    var inputs=document.getElementsByClassName("input-color-carrello");
+    for (let index = 0; index < inputs.length; index++)
+    {
+        const input = inputs[index];
+        var carrello=input.getAttribute("carrello");
+        var colorHex=input.value;
+        var colorObj=hexToRgb(colorHex);
+        var color="rgba("+colorObj.r+","+colorObj.g+","+colorObj.b+",0.45)";
+
+        if(colorsCarrelli[index].carrello==carrello)
+        {
+            colorsCarrelli[index].colorHex=colorHex;
+            colorsCarrelli[index].color=color;
+        }
+    }
+    console.log(colorsCarrelli);
+    Swal.close();
+    coloraCarrelli();
+}
+async function getPopupRiepilogo()
+{
+    Swal.fire
+    ({
+        title: "Caricamento in corso... ",
+        background:"rgba(0,0,0,0.4)",
+        html: '<i style="color:#ddd" class="fad fa-spinner-third fa-spin fa-3x"></i>',
+        showConfirmButton:false,
+        showCloseButton:false,
+        allowEscapeKey:false,
+        allowOutsideClick:false,
+        onOpen : function()
+        {
+            document.getElementsByClassName("swal2-title")[0].style.color="white";
+            document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";
+            document.getElementsByClassName("swal2-title")[0].style.fontWeight="normal";
+            document.getElementsByClassName("swal2-container")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.padding="0px";
+            document.getElementsByClassName("swal2-popup")[0].style.height="100%";
+            document.getElementsByClassName("swal2-popup")[0].style.maxWidth="100%";document.getElementsByClassName("swal2-popup")[0].style.minWidth="100%";document.getElementsByClassName("swal2-popup")[0].style.width="100%";
+        }
+    });
+
+    var cabineAssegnateString=await getCabineAssegnate();
+
+    setTimeout(function()
+    {
+        var selectValue=$('#selectLottoAssegnaCabineCorridoi').multipleSelect('getSelects')[0];
+        var commessa=selectValue.split("|")[0];
+        var lotto=selectValue.split("|")[1];
+    
+        var outerContainer=document.createElement("div");
+        outerContainer.setAttribute("class","popup-outer-container");
+    
+        var actionBar=document.createElement("div");
+        actionBar.setAttribute("class","popup-action-bar");
+        actionBar.setAttribute("style","padding:0px;margin-bottom:5px;height:auto;box-shadow:none");
+    
+        var span=document.createElement("span");
+        span.innerHTML="Riepilogo lotto "+lotto;
+        actionBar.appendChild(span);
+
+        var button=document.createElement("button");
+        button.setAttribute("style","margin-left:auto;");
+        button.setAttribute("class","popup-action-bar-text-button");
+        button.setAttribute("id","popupActionBarTextButtoncabina_corridoio");
+        button.setAttribute("onclick","getGraficoQntCabine('cabina_corridoio')");
+        button.innerHTML='N. Cabine';
+        actionBar.appendChild(button);
+
+        var button=document.createElement("button");
+        button.setAttribute("class","popup-action-bar-text-button");
+        button.setAttribute("id","popupActionBarTextButtonkit");
+        button.setAttribute("onclick","getGraficoQntCabine('kit')");
+        button.innerHTML='N. Kit';
+        actionBar.appendChild(button);
+
+        var button=document.createElement("button");
+        button.setAttribute("class","popup-action-bar-text-button");
+        button.setAttribute("id","popupActionBarTextButtonpannelli");
+        button.setAttribute("onclick","getGraficoQntCabine('pannelli')");
+        button.innerHTML='N. Pannelli';
+        actionBar.appendChild(button);
+    
+        var button=document.createElement("button");
+        button.setAttribute("class","popup-action-bar-close-button");
+        button.setAttribute("onclick","Swal.close()");
+        button.innerHTML='<i class="fal fa-times"></i>';
+        actionBar.appendChild(button);
+    
+        outerContainer.appendChild(actionBar);
+
+        var row=document.createElement("div");
+        row.setAttribute("class","popup-riepilogo-info-container");
+        row.innerHTML=cabineAssegnateString;
+
+        outerContainer.appendChild(row);
+
+        var row=document.createElement("div");
+        row.setAttribute("class","popup-riepilogo-chart-container");
+        row.setAttribute("id","graficoQntCabineContainer");
+        
+        outerContainer.appendChild(row);
+    
+        Swal.fire
+        ({
+            background:"#353535",
+            width:"1000px",
+            onOpen : function()
+                    {
+                        document.getElementsByClassName("swal2-close")[0].style.outline="none";
+                        getGraficoQntCabine("cabina_corridoio");
+                    },
+            showConfirmButton:false,
+            showCancelButton:false,
+            html:outerContainer.outerHTML
+        });
+    }, 200);
+}
+function getCabineAssegnate()
+{
+    return new Promise(function (resolve, reject) 
+    {
+        var selectValue=$('#selectLottoAssegnaCabineCorridoi').multipleSelect('getSelects')[0];
+        var commessa=selectValue.split("|")[0];
+        var lotto=selectValue.split("|")[1];
+        $.get("getCabineAssegnateRiepilogoAssegnaCabineCorridoi.php",
+        {
+            commessa,
+            lotto
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                resolve(response);
+            }
+            else
+                reject({status});
+        });
+    });
+}
+function getDataPointsRiepilogo(colonna)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        var selectValue=$('#selectLottoAssegnaCabineCorridoi').multipleSelect('getSelects')[0];
+        var commessa=selectValue.split("|")[0];
+        var lotto=selectValue.split("|")[1];
+        $.get("getDataPointsRiepilogoAssegnaCabineCorridoi.php",
+        {
+            commessa,
+            lotto,
+            colonna
+        },
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                resolve(JSON.parse(response));
+            }
+            else
+                reject({status});
+        });
+    });
+}
+async function getGraficoQntCabine(colonna)
+{
+    var graficoQntCabineContainer=document.getElementById("graficoQntCabineContainer");
+    graficoQntCabineContainer.innerHTML="<div style='color:#ddd;margin-top:10px'><i class='fad fa-spinner-third fa-spin' style='margin-right:10px;font-size:16px'></i><span>Caricamento in corso...</span></div>";
+
+    $(".popup-action-bar-text-button").css({"color":"","border":""});
+    $("#popupActionBarTextButton"+colonna).css({"color":"#4C91CB","border":"1px solid #4C91CB"});
+
+    if(colonna=="cabina_corridoio")
+    {
+        var axisYTitle="N. Cabine";
+        var axisYInterval=1;
+    }
+    if(colonna=="kit")
+    {
+        var axisYTitle="N. Kit";  
+        var axisYInterval=2;
+    }
+    if(colonna=="pannelli")
+    {
+        var axisYTitle="N. Pannelli";  
+        var axisYInterval=10;
+    }
+
+    var data=await getDataPointsRiepilogo(colonna);
+        
+    graficoQntCabineContainer.innerHTML="";
+
+    var chart = new CanvasJS.Chart("graficoQntCabineContainer",
+    {
+        backgroundColor:"transparent",
+        animationEnabled: true,
+        title:
+        {
+            text: "Carico di lavoro linee",
+            fontFamily: "'Montserrat',sans-serif",
+            fontColor: "#ddd",
+            fontSize: 12,
+            padding: 10,
+        },
+        axisY:
+        {
+            titleFontFamily: "'Montserrat',sans-serif",
+            titleFontColor: "#ddd",
+            titleFontSize: 10,
+            labelFontFamily: "'Montserrat',sans-serif",
+            labelFontColor: "#ddd",
+            labelFontSize: 10,
+            title: axisYTitle,
+            interval:axisYInterval
+        },
+        axisX:
+        {
+            titleFontFamily: "'Montserrat',sans-serif",
+            titleFontColor: "#ddd",
+            titleFontSize: 10,
+            labelFontFamily: "'Montserrat',sans-serif",
+            labelFontColor: "#ddd",
+            labelFontSize: 10
+        },
+        legend:
+        {
+            cursor:"pointer",
+            fontFamily: "'Montserrat',sans-serif",
+            fontColor: "#ddd",
+            fontSize: 12,
+            fontWeight: "normal",
+            itemclick : toggleDataSeries
+        },
+        toolTip:
+        {
+            shared: true,
+            content: toolTipFormatter
+        },
+        data
+    });
+    chart.render();
+    
+    function toolTipFormatter(e)
+    {
+        var str = "";
+        var total = 0 ;
+        var str3;
+        var str2 ;
+        for (var i = 0; i < e.entries.length; i++){
+            var str1 = "<span style= \"color:"+e.entries[i].dataSeries.color + "\">" + e.entries[i].dataSeries.name + "</span>: <strong>"+  e.entries[i].dataPoint.y + "</strong> <br/>" ;
+            total = e.entries[i].dataPoint.y + total;
+            str = str.concat(str1);
+        }
+        str2 = "<strong>" + e.entries[0].dataPoint.label + "</strong> <br/>";
+        str3 = "<span style = \"color:Tomato\">Totale: </span><strong>" + total + "</strong><br/>";
+        return (str2.concat(str)).concat(str3);
+    }
+}
+function toggleDataSeries(e)
+{
+    if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+        e.dataSeries.visible = false;
+    } else {
+        e.dataSeries.visible = true;
+    }
+    e.chart.render();
 }

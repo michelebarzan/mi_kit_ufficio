@@ -20,6 +20,7 @@
 		<script src="libs/js/spinners/spinner.js"></script>
 		<script src="editableTable/editableTable.js"></script>
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
+		<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 	</head>
 	<body>
 		<?php include('struttura.php'); ?>
@@ -37,11 +38,15 @@
 					<span>Anagrafica stazioni</span>
 					<i class="fad fa-network-wired"></i>
 				</button>
+				<button class="full-width-action-bar-button" onclick="resetStyle(this);anagraficaTurni(this)">
+					<span>Anagrafica turni</span>
+					<i class="fad fa-users-class"></i>
+				</button>
 			</div>
         </div>
         <div class="gestioneLineeOuterContainer">
 			<div class="gestioneLineeInnerContainer">
-				<div class="gestioneLineeActionBar" id="gestioneLineeActionBar"></div>
+				<div class="reusable-control-bar" id="gestioneLineeActionBar"></div>
 				<div id="gestioneLineeInnerContainer"></div>
 			</div>
 		</div>

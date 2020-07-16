@@ -4,7 +4,7 @@
 
     $linee=[];
 
-    $query2="SELECT [id_linea],[nome],[numero],[label] FROM [mi_linea_kit].[dbo].[anagrafica_linee]";	
+    $query2="SELECT [id_linea],[nome],[numero],[label],[colore] FROM [mi_linea_kit].[dbo].[anagrafica_linee]";	
     $result2=sqlsrv_query($conn,$query2);
     if($result2==TRUE)
     {
@@ -14,6 +14,7 @@
             $linea["nome"]=$row2['nome'];
             $linea["numero"]=$row2['numero'];
             $linea["label"]=$row2['label'];
+            $linea["colore"]=$row2['colore'];
 
             array_push($linee,$linea);
         }

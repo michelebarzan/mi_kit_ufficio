@@ -2,6 +2,9 @@ var keysMap=[{"key":"F1","keyCode":112},{"key":"F2","keyCode":113},{"key":"F3","
 var ready=false;
 var keyPressed=null;
 var array_funzioni_tasti;
+var hot;
+var view;
+var newRowWBtn=false;
 
 function resetStyle(button)
 {
@@ -28,12 +31,16 @@ function resetStyle(button)
 }
 function getParametri(button)
 {
+    newRowWBtn=false;
+
+    view="parametri";
+
     $("#parametriAnagraficheActionBar").show("fast","swing");
     $("#parametriAnagraficheActionBar").css({"display":"flex"});
     var actionBar=document.getElementById("parametriAnagraficheActionBar");
     actionBar.innerHTML="";
     
-    var actionBarItem=document.createElement("div");
+    /*var actionBarItem=document.createElement("div");
     actionBarItem.setAttribute("class","rcb-text-container");
 
     var span=document.createElement("span");
@@ -54,9 +61,19 @@ function getParametri(button)
     buttonRipristina.setAttribute("onclick","resetFilters();getTable(selectetTable)");
     buttonRipristina.innerHTML='<span>Ripristina</span><i style="margin-left:5px" class="fal fa-filter"></i>';
     
-    actionBar.appendChild(buttonRipristina);
+    actionBar.appendChild(buttonRipristina);*/
 
-    getTable("parametri");
+    /*<button class="rcb-button-text-icon" onclick="esportaTabellaPieghe()"><span>Esporta</span><i style="margin-left: 5px;" class="fad fa-file-excel"></i></button>
+	<button class="rcb-button-text-icon" onclick="aggiungiRigaHot()"><span>Aggiungi Riga</span><i style="margin-left: 5px;font-size:15px" class="fad fa-plus-circle"></i></button>*/
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","aggiungiRigaHot();");
+    button.innerHTML='<span>Aggiungi Riga</span><i style="margin-left:5px;font-size:15px" class="fad fa-plus-circle"></i>';
+    
+    actionBar.appendChild(button);
+
+    getHot("parametri");
 }
 function getTable(table,orderBy,orderType)
 {
@@ -88,10 +105,14 @@ function getTable(table,orderBy,orderType)
 }
 function editableTableLoad()
 {
-
+    if(selectetTable=="view_mappatura_tasti")
+    {
+        $(".btnFilter").hide();
+    }
 }
 async function configurazioneTastierino()
 {
+    view=="configurazione_tastierino";
     array_funzioni_tasti=await getArrayFunzioniTasti();
 
     $("#parametriAnagraficheActionBar").show("fast","swing");
@@ -499,9 +520,14 @@ window.addEventListener("click", function(event)
 });
 window.addEventListener("keydown", function(event)
 {
-    event.preventDefault();
-    var keyCode=event.keyCode;
-    setKeyPressed(keyCode);
+    if(view=="configurazione_tastierino")
+    {
+        event.preventDefault();
+        var keyCode=event.keyCode;
+        try {
+            setKeyPressed(keyCode);
+        } catch (error) {}
+    }
 });
 async function setKeyPressed(keyCode)
 {
@@ -520,6 +546,11 @@ async function setKeyPressed(keyCode)
         if(element.keyCode==keyCode)
             key=element.key;
     }
+
+    try {
+        document.getElementById("labelPremiUnTasto").innerHTML=key;
+    } catch (error) {}
+
     var label=document.createElement("div");
     label.setAttribute("class","key-pressed-info");
     label.innerHTML="Nome tasto: <b id='labelNomeTasto'>"+key+"</b>";
@@ -536,7 +567,7 @@ async function setKeyPressed(keyCode)
 
     if(ready)
     {
-		var funzione=document.getElementById("selectFunzioneTastoAssegnaCabineCorridoi").value;
+        var funzione=document.getElementById("selectFunzioneTastoAssegnaCabineCorridoi").value;
         keyPressed=
         {
             "keyCode":keyCode,
@@ -741,4 +772,229 @@ function registraFunzioneTasto()
             }
         }
     });
+}
+function getMascheraCorrispondenzaCommesse(button)
+{
+    newRowWBtn=false;
+
+    view="corrispondenzaCommesse";
+
+    $("#parametriAnagraficheActionBar").show("fast","swing");
+    $("#parametriAnagraficheActionBar").css({"display":"flex"});
+    var actionBar=document.getElementById("parametriAnagraficheActionBar");
+    actionBar.innerHTML="";
+    
+    /*var actionBarItem=document.createElement("div");
+    actionBarItem.setAttribute("class","rcb-text-container");
+
+    var span=document.createElement("span");
+    span.setAttribute("style","margin-right:5px");
+    span.innerHTML="Righe:";
+    actionBarItem.appendChild(span);
+
+    var span=document.createElement("span");
+    span.setAttribute("id","rowsNumEditableTable");
+    span.setAttribute("style","font-weight:normal;color:black");
+    span.innerHTML="0";
+    actionBarItem.appendChild(span);
+    
+    actionBar.appendChild(actionBarItem);
+
+    var buttonRipristina=document.createElement("button");
+    buttonRipristina.setAttribute("class","rcb-button-text-icon");
+    buttonRipristina.setAttribute("onclick","resetFilters();getTable(selectetTable)");
+    buttonRipristina.innerHTML='<span>Ripristina</span><i style="margin-left:5px" class="fal fa-filter"></i>';
+    
+    actionBar.appendChild(buttonRipristina);*/
+
+    var button=document.createElement("button");
+    button.setAttribute("class","rcb-button-text-icon");
+    button.setAttribute("onclick","aggiungiRigaHot();");
+    button.innerHTML='<span>Aggiungi Riga</span><i style="margin-left:5px;font-size:15px" class="fad fa-plus-circle"></i>';
+    
+    actionBar.appendChild(button);
+
+    getHot("corrispondenza_commesse");
+}
+async function getHot(table)
+{
+    var container = document.getElementById('parametriAnagraficheInnerContainer');
+    container.innerHTML="";
+
+    Swal.fire
+    ({
+        width:"100%",
+        background:"transparent",
+        title:"Caricamento in corso...",
+        html:'<i class="fad fa-spinner-third fa-spin fa-3x" style="color:white"></i>',
+        allowOutsideClick:false,
+        showCloseButton:false,
+        showConfirmButton:false,
+        allowEscapeKey:false,
+        showCancelButton:false,
+        onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.fontWeight="bold";document.getElementsByClassName("swal2-title")[0].style.color="white";}
+    });
+
+    var response=await getHotData(table);
+
+    Swal.close();
+
+    var height=document.documentElement.offsetHeight;
+	height-=300;
+
+    if(response.data.length>0)
+    {
+		if(hot!=undefined)
+			hot.destroy();
+        hot = new Handsontable
+        (
+            container,
+            {
+                data: response.data,
+                rowHeaders: true,
+                manualColumnResize: true,
+                colHeaders: response.colHeaders,
+                className: "htMiddle",
+                filters: true,
+                dropdownMenu: true,
+                headerTooltips: true,
+                language: 'it-IT',
+                contextMenu: true,
+                width:"100%",
+                columnSorting: true,
+                height,
+                columns:response.columns,
+                afterChange: (changes) =>
+                {
+                    if(changes!=null)
+                    {
+                        changes.forEach(([row, prop, oldValue, newValue]) =>
+                        {
+                            if(prop!=response.primaryKey)
+                            {
+                                var id=hot.getDataAtCell(row, 0);
+                                aggiornaRigaHot(id,prop,newValue,table,response.primaryKey);
+                            }
+                        });
+                    }
+                },
+                afterCreateRow: (index,amount,source) =>
+                {
+                    if(!newRowWBtn)
+                        creaRigaHot(index,table,response.primaryKey);
+                    else
+                        newRowWBtn=false;
+                },
+                beforeRemoveRow: (index,amount,physicalRows,source)  =>
+                {
+                    for (let i = 0; i < physicalRows.length; i++)
+                    {
+                        const indice = physicalRows[i];
+                        var id=hot.getDataAtCell(indice, 0);
+                        eliminaRigaHot(id,table,response.primaryKey);
+                    }
+                }
+            }
+        );
+        document.getElementById("hot-display-license-info").remove();
+        $(".handsontable .changeType").css
+        ({
+            "background": "#eee",
+            "border-radius": "0",
+            "border": "none",
+            "color": "#404040",
+            "font-size": "14px",
+            "line-height": "normal",
+            "padding": "0px",
+            "margin": "0px",
+            "float": "right"
+        });
+    }
+}
+function aggiornaRigaHot(id,colonna,valore,table,primaryKey)
+{
+    $.get("aggiornaRigaHot.php",{id,colonna,valore,table,primaryKey},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+        }
+    });
+}
+function creaRigaHot(index,table,primaryKey)
+{
+    console.log("salsiccia");
+    $.get("creaRigaHot.php",{table,primaryKey},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+            else
+                hot.setDataAtCell(index, 0, response);
+        }
+    });
+}
+function eliminaRigaHot(id,table,primaryKey)
+{
+    $.get("eliminaRigaHot.php",{id,table,primaryKey},
+    function(response, status)
+    {
+        if(status=="success")
+        {
+            if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+            {
+                Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                console.log(response);
+            }
+        }
+    });
+}
+function getHotData(table)
+{
+    return new Promise(function (resolve, reject) 
+    {
+        $.get("getHotData.php",{table},
+        function(response, status)
+        {
+            if(status=="success")
+            {
+                if(response.toLowerCase().indexOf("error")>-1 || response.toLowerCase().indexOf("notice")>-1 || response.toLowerCase().indexOf("warning")>-1)
+                {
+                    Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                    console.log(response);
+                    resolve([]);
+                }
+                else
+                {
+                    try {
+                        resolve(JSON.parse(response));
+                    } catch (error) {
+                        Swal.fire({icon:"error",title: "Errore. Se il problema persiste contatta l' amministratore",onOpen : function(){document.getElementsByClassName("swal2-title")[0].style.color="gray";document.getElementsByClassName("swal2-title")[0].style.fontSize="14px";}});
+                        console.log(response);
+                        resolve([]);
+                    }
+                }
+            }
+        });
+    });
+}
+function aggiungiRigaHot()
+{
+    if(view=="corrispondenzaCommesse")
+        creaRigaHot(hot.countRows(),"corrispondenza_commesse","id_commessa");
+
+    if(view=="parametri")
+        creaRigaHot(hot.countRows(),"parametri","id_parametro");
+
+    newRowWBtn=true;
 }

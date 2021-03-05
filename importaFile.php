@@ -55,6 +55,13 @@
                 die("error1: ".$q1);
             }
         }
+        //svuota carrelli_cabine
+        $q1="DELETE FROM carrelli_cabine WHERE numero_cabina='$row[4]' AND disegno_cabina='$row[5]'";
+        $r1=sqlsrv_query($conn,$q1);
+        if($r1==FALSE)
+        {
+            die("error1: ".$q1);
+        }
         $q2="INSERT INTO [dbo].[dati_gea]
                     ([commessa]
                     ,[lotto]
@@ -81,6 +88,19 @@
             die("error2: ".$q2);
         }
         $n++;
+    }
+
+    //riempi carrelli_cabine
+    $q1="INSERT INTO carrelli_cabine (CODCAR,disegno_cabina,numero_cabina,commessa) SELECT dbo.view_carrelli_cabine.CODCAR, dbo.view_carrelli_cabine.disegno_cabina, dbo.view_carrelli_cabine.numero_cabina, dbo.view_carrelli_cabine.commessa
+        FROM dbo.view_carrelli_cabine INNER JOIN
+                                dbo.dati_gea ON dbo.view_carrelli_cabine.commessa = right(dbo.dati_gea.commessa,4) COLLATE Latin1_General_CI_AS AND 
+                                dbo.view_carrelli_cabine.disegno_cabina = dbo.dati_gea.disegno_cabina COLLATE Latin1_General_CI_AS AND 
+                                dbo.view_carrelli_cabine.numero_cabina COLLATE SQL_Latin1_General_CP1_CI_AS = dbo.dati_gea.numero_cabina
+        WHERE (dbo.dati_gea.commessa = '$commessa') AND (dbo.dati_gea.lotto = '$lotto')";
+    $r1=sqlsrv_query($conn,$q1);
+    if($r1==FALSE)
+    {
+        die("error1: ".$q1);
     }
     
     $q5="SELECT * FROM lotti WHERE commessa='$commessa' AND lotto='$lotto'";

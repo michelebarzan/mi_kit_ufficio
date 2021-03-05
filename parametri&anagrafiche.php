@@ -16,6 +16,9 @@
 		<script src="libs/js/spinners/spinner.js"></script>
 		<script src="editableTable/editableTable.js"></script>
 		<link rel="stylesheet" href="editableTable/editableTable.css" />
+		<script src="libs/js/handsontable/handsontable.full.min.js"></script>
+		<link href="libs/js/handsontable/handsontable.full.min.css" rel="stylesheet" media="screen">
+		<script type="text/javascript" src="libs/js/handsontable/languages/it-IT.js"></script>
 	</head>
 	<body>
 		<?php include('struttura.php'); ?>
@@ -28,6 +31,10 @@
 				<button class="full-width-action-bar-button" onclick="resetStyle(this);getParametri(this)">
 					<span>Parametri applicazione</span>
 					<i class="fal fa-table"></i>
+				</button>
+				<button class="full-width-action-bar-button" onclick="resetStyle(this);getMascheraCorrispondenzaCommesse(this)">
+					<span>Corrispondenza commesse</span>
+					<i class="fad fa-ship"></i>
 				</button>
 			</div>
         </div>

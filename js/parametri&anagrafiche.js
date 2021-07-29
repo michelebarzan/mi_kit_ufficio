@@ -114,6 +114,7 @@ async function configurazioneTastierino()
 {
     view=="configurazione_tastierino";
     array_funzioni_tasti=await getArrayFunzioniTasti();
+	console.log(array_funzioni_tasti);
 
     $("#parametriAnagraficheActionBar").show("fast","swing");
     $("#parametriAnagraficheActionBar").css({"display":"flex"});

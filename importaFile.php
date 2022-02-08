@@ -42,7 +42,7 @@
             {
                 die("error1: ".$q3);
             }
-            $q4="INSERT INTO lotti(lotto,commessa,producibile,data_importazione,utente_importazione) SELECT '$lotto','$commessa','false',GETDATE(),".$_SESSION['id_utente']." WHERE '$lotto' NOT IN (SELECT lotto FROM lotti WHERE commessa='$commessa')";
+            $q4="INSERT INTO lotti(lotto,commessa,producibile,data_importazione,utente_importazione,chiuso) SELECT '$lotto','$commessa','false',GETDATE(),".$_SESSION['id_utente'].",'false' WHERE '$lotto' NOT IN (SELECT lotto FROM lotti WHERE commessa='$commessa')";
             $r4=sqlsrv_query($conn,$q4);
             if($r4==FALSE)
             {

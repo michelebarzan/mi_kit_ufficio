@@ -75,10 +75,23 @@ async function importaFileGea(input)
                         }
                         else
                         {
-                            var lotto=JSON.parse(response2);
-                            lotti.push(lotto);
-                            nFiles++;
-                            uploadedFiles.push(fileName);
+							try
+							{
+								var lotto=JSON.parse(response2);
+								lotti.push(lotto);
+								nFiles++;
+								uploadedFiles.push(fileName);
+							}
+							catch (error)
+							{
+								console.log(response2);
+								var errorFile=
+								{
+									file,
+									message:"Errore generale. Contatta l' amministratore"
+								}
+								errorsFiles.push(errorFile);
+							}
                         }
                     }
                         
